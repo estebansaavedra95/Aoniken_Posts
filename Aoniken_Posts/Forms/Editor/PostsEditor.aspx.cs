@@ -56,22 +56,22 @@ namespace Aoniken_Posts.Forms
         {
             var IdPost = hfPost.Value;
             AprobarPost(Convert.ToInt32(IdPost));
-            lvPosts.DataBind();
+            Response.Redirect("~/Forms/Editor/PostsEditor.aspx");
+
         }
 
         protected void btnRechazar_Click(object sender, EventArgs e)
         {
             var IdPost = hfPost.Value;
             RechazarPost(Convert.ToInt32(IdPost));
-            lvPosts.DataBind();
-
+            Response.Redirect("~/Forms/Editor/PostsEditor.aspx");
         }
 
         protected void btnEliminar_Click(object sender, EventArgs e)
         {
             var IdPost = hfPost.Value;
             EliminarPost(Convert.ToInt32(IdPost));
-            lvPosts.DataBind();
+            Response.Redirect("~/Forms/Editor/PostsEditor.aspx");
         }
 
         private void AprobarPost(int Id)
@@ -155,7 +155,7 @@ namespace Aoniken_Posts.Forms
         {
             //Se cargan los escritores que tienen blogs creados y aprobados (estado 2)
             string sql = "SELECT -1 ID_USUARIO,'(Todos los escritores)' APELLIDO_NOMBRE UNION ";
-            sql += " SELECT ID_USUARIO, APELLIDO_NOMBRE FROM USUARIOS U WHERE ID_ROL = 2 AND ID_USUARIO IN (SELECT ID_USUARIO_CREA FROM POSTS  WHERE ID_ESTADO_POST = 2 ) ";
+            sql += " SELECT ID_USUARIO, APELLIDO_NOMBRE FROM USUARIOS U WHERE ID_ROL = 2 AND ID_USUARIO IN (SELECT ID_USUARIO_CREA FROM POSTS  WHERE ID_ESTADO_POST = 1 ) ";
             sqlEscritores.SelectCommand = sql;
 
             if (Request.QueryString["esc"] != null)
