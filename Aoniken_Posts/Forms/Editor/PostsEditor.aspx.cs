@@ -77,34 +77,63 @@ namespace Aoniken_Posts.Forms
         private void AprobarPost(int Id)
         {
             //Se actualiza el post en estado 2(aprobado) y se guarda la fecha en que se hace, con un id que está oculto.
-            using (var cn = new SqlConnection(ConfigurationManager.ConnectionStrings["connectiondb"].ToString()))
-            {
-                cn.Open();
-                SqlCommand cmd = new SqlCommand($"UPDATE POSTS SET ID_ESTADO_POST = 2, F_APROBACION = '{DateTime.Now.ToString("yyyy-MM-dd")}' WHERE ID_POST = {Id}", cn);
-                cmd.ExecuteNonQuery();
 
+            try
+            {
+                using (var cn = new SqlConnection(ConfigurationManager.ConnectionStrings["connectiondb"].ToString()))
+                {
+                    cn.Open();
+                    SqlCommand cmd = new SqlCommand($"UPDATE POSTS SET ID_ESTADO_POST = 2, F_APROBACION = '{DateTime.Now.ToString("yyyy-MM-dd")}' WHERE ID_POST = {Id}", cn);
+                    cmd.ExecuteNonQuery();
+
+                }
             }
+            catch (Exception ex)
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "error", "alert('Ocurrió un error al intentar aprobar el post.');", true);
+            }
+
+         
         }
         private void RechazarPost (int Id)
         {
             //Se actualiza el post en estado 3(rechazado) y se guarda la fecha en que se hace, con un id que está oculto.
-            using (var cn = new SqlConnection(ConfigurationManager.ConnectionStrings["connectiondb"].ToString()))
+
+            try
             {
-                cn.Open();
-                SqlCommand cmd = new SqlCommand($"UPDATE POSTS SET ID_ESTADO_POST = 3, F_RECHAZO = '{DateTime.Now.ToString("yyyy-MM-dd")}' WHERE ID_POST = {Id}", cn);
-                cmd.ExecuteNonQuery();
-                cn.Close();
+                using (var cn = new SqlConnection(ConfigurationManager.ConnectionStrings["connectiondb"].ToString()))
+                {
+                    cn.Open();
+                    SqlCommand cmd = new SqlCommand($"UPDATE POSTS SET ID_ESTADO_POST = 3, F_RECHAZO = '{DateTime.Now.ToString("yyyy-MM-dd")}' WHERE ID_POST = {Id}", cn);
+                    cmd.ExecuteNonQuery();
+                    cn.Close();
+                }
             }
+            catch (Exception ex)
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "error", "alert('Ocurrió un error al intentar rechazar el post.');", true);
+            }
+       
         }
         private void EliminarPost(int Id)
         {
-            using (var cn = new SqlConnection(ConfigurationManager.ConnectionStrings["connectiondb"].ToString()))
+            try
             {
-                cn.Open();
-                SqlCommand cmd = new SqlCommand($"DELETE FROM POSTS WHERE ID_POST = {Id}", cn);
-                cmd.ExecuteNonQuery();
-                cn.Close();
+                using (var cn = new SqlConnection(ConfigurationManager.ConnectionStrings["connectiondb"].ToString()))
+                {
+                    cn.Open();
+                    SqlCommand cmd = new SqlCommand($"DELETE FROM POSTS  WHERE ID_POST = {Id}", cn);
+                    cmd.ExecuteNonQuery();
+                    cn.Close();
+                }
+
             }
+            catch (Exception ex)
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "error", "alert('Ocurrió un error al intentar eliminar el post.');", true);
+            }
+
+           
         }
         private void CargarListado()
         {

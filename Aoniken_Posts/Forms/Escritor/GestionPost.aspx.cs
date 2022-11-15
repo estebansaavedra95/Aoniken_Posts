@@ -73,39 +73,75 @@ namespace Aoniken_Posts.Forms.Editor
 
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
-            string IdPost = Request.QueryString["id"].ToString();
-            if (IdPost == "0")
-            {
-                GuardarPost();
-            }
-            else
-            {
-                ModificarPost(IdPost);
-            }
-            
-            Response.Redirect($"~/Forms/Escritor/PostsEscritor.aspx?{Request.QueryString.ToString()}");
+     
+                string IdPost = Request.QueryString["id"].ToString();
+                if (IdPost == "0")
+                {
+                   if ( GuardarPost() == 1)
+                    {
+                        Response.Redirect($"~/Forms/Escritor/PostsEscritor.aspx?{Request.QueryString.ToString()}");
+                    }
+                    else
+                    {
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "error", "alert('Ocurrió un error al intentar crear el post.');", true);
+                    }
+                }
+                else
+                {
+
+                    if (ModificarPost(IdPost) == 1)
+                    {
+                        Response.Redirect($"~/Forms/Escritor/PostsEscritor.aspx?{Request.QueryString.ToString()}");
+                    }
+                    else
+                    {
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "error", "alert('Ocurrió un error al intentar modificar el post.');", true);
+                    }
+                }
         }
 
-        private void GuardarPost()
+        private int GuardarPost()
         {
-            using (var cn = new SqlConnection(ConfigurationManager.ConnectionStrings["connectiondb"].ToString()))
+            int pudo;
+            try 
             {
-                cn.Open();
-                SqlCommand cmd = new SqlCommand($"INSERT INTO POSTS (DESC_POST, TITULO, ID_USUARIO_CREA) VALUES ('{txtDescripcion.Text}', '{txtTitulo.Text}', {Session["ID"]} )", cn);
-                cmd.ExecuteNonQuery();
-                cn.Close();
+                using (var cn = new SqlConnection(ConfigurationManager.ConnectionStrings["connectiondb"].ToString()))
+                {
+                    cn.Open();
+                    SqlCommand cmd = new SqlCommand($"INSERT INTO POSTS (DESC_POST, TITULO, ID_USUARIO_CREA) VALUES ('{txtDescripcion.Text}', '{txtTitulo.Text}', {Session["ID"]} )", cn);
+                    cmd.ExecuteNonQuery();
+                    cn.Close();
+                    pudo = 1;
+                }
             }
+            catch (Exception ex)
+            {
+                pudo = 0;
+
+            }
+            return pudo;
         }
-        private void ModificarPost(string Id)
+        private int ModificarPost(string Id)
         {
-            using (var cn = new SqlConnection(ConfigurationManager.ConnectionStrings["connectiondb"].ToString()))
+            int pudo;
+            try
             {
-                cn.Open();
-                var sql = $"UPDATE POSTS SET TITULO = '{txtTitulo.Text}', DESC_POST = '{txtDescripcion.Text}' WHERE ID_POST = {Id}";
-                SqlCommand cmd = new SqlCommand(sql, cn);
-                cmd.ExecuteNonQuery();
-                cn.Close();
+
+                using (var cn = new SqlConnection(ConfigurationManager.ConnectionStrings["connectiondb"].ToString()))
+                {
+                    cn.Open();
+                    var sql = $"UPDATE POSTS SET TITULO = '{txtTitulo.Text}', DESC_POST = '{txtDescripcion.Text}'  WHERE ID_POST = {Id}";
+                    SqlCommand cmd = new SqlCommand(sql, cn);
+                    cmd.ExecuteNonQuery();
+                    cn.Close();
+                    pudo = 1;
+                }
             }
+            catch(Exception ex)
+            {
+                pudo = 0;
+            }
+            return pudo;
         }
 
         private void DeshabilitarCampos()

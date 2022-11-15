@@ -57,13 +57,22 @@ namespace Aoniken_Posts.Forms
         }
         private void ModificarEstado(int Id, int Accion)
         {
-            using (var cn = new SqlConnection(ConfigurationManager.ConnectionStrings["connectiondb"].ToString()))
+            try 
             {
-                cn.Open();
-                SqlCommand cmd = new SqlCommand($"UPDATE POSTS SET ID_ESTADO_POST = {Accion} WHERE ID_POST = {Id}", cn);
-                cmd.ExecuteNonQuery();
-                cn.Close();
+                using (var cn = new SqlConnection(ConfigurationManager.ConnectionStrings["connectiondb"].ToString()))
+                {
+                    cn.Open();
+                    SqlCommand cmd = new SqlCommand($"UPDATE POSTS SET ID_ESTADO_POST = {Accion} WHERE ID_POST = {Id}", cn);
+                    cmd.ExecuteNonQuery();
+                    cn.Close();
+                }
             }
+            catch(Exception ex)
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "error", "alert('Ocurrió un error al intentar enviar el post.');", true);
+            }
+
+          
         }
 
         private void CargarEstados()
